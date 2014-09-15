@@ -8,8 +8,8 @@
 
   <artifactId>performance</artifactId>
   <packaging>hpi</packaging>
-  <version>1.12-SNAPSHOT</version>
-  <name>Performance plugin</name>
+  <version>1.12.01</version>
+  <name>Performance plugin Forked</name>
   <url>http://wiki.jenkins-ci.org/display/JENKINS/Performance+Plugin</url>
 
   <developers>
@@ -52,7 +52,12 @@
 		<groupId>com.google.code.gson</groupId>
 		<artifactId>gson</artifactId>
 		<version>2.2.4</version>
-	  </dependency>      
+	  </dependency>
+	  <dependency>
+		  <groupId>org.codehaus.jackson</groupId>
+		  <artifactId>jackson-mapper-asl</artifactId>
+		  <version>1.9.13</version>
+	  </dependency>
     </dependencies>
 
   <distributionManagement>

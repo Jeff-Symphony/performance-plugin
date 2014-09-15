@@ -17,6 +17,7 @@ import java.io.PrintStream;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.codehaus.jackson.map.ObjectMapper;
 
 public class PerformancePublisher extends Recorder {
 
@@ -336,6 +337,8 @@ public class PerformancePublisher extends Recorder {
           List<File> localReports = copyReportsToMaster(build, logger, files, parser.getDescriptor().getDisplayName());
           Collection<PerformanceReport> parsedReports = parser.parse(build, localReports, listener);
 
+          Map<String,Object> averages = new HashMap<String,Object>();
+
           // mark the build as unstable or failure depending on the outcome.
           for (PerformanceReport r : parsedReports) {
 
@@ -385,6 +388,7 @@ public class PerformancePublisher extends Recorder {
 
             long average = r.getAverage();
             logger.println(r.getReportFileName() + " has an average of: "+ Long.toString(average));
+            averages.put(r.getReportFileName(), average);
 
             try {
               if (responseTimeThresholdMap != null && responseTimeThresholdMap.get(r.getReportFileName()) != null) {
@@ -446,6 +450,15 @@ public class PerformancePublisher extends Recorder {
             fw.close();
 
             logger.print("\n\n\n");
+          }
+
+          File avgfile = new File(xmlDir+"/average.json");
+          logger.println("Saving averages to:  " + avgfile.getAbsolutePath());
+          try{
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(new File(avgfile.getAbsolutePath()), averages);
+          }catch (IOException e) {
+            logger.println("WARNING: Failed to write out average: " + e.getMessage());
           }
         }
       } catch(Exception e) {
